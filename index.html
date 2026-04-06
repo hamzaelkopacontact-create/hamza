@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>النظام البصري الفائق - تحليل بالذكاء الاصطناعي المتقدم</title>
+    <title>الرؤية الفائقة - تحليل فوري وسريع</title>
     <style>
         * {
             margin: 0;
@@ -15,23 +15,23 @@
             font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px;
             direction: rtl;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         .header {
             text-align: center;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .header h1 {
-            font-size: 2.5em;
+            font-size: 1.8em;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -41,19 +41,19 @@
         .badge {
             display: inline-block;
             background: rgba(255,255,255,0.2);
-            padding: 5px 15px;
+            padding: 4px 12px;
             border-radius: 50px;
-            font-size: 12px;
-            margin-top: 10px;
+            font-size: 11px;
+            margin-top: 8px;
         }
 
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 25px;
+            gap: 20px;
         }
 
-        @media (max-width: 1000px) {
+        @media (max-width: 900px) {
             .grid {
                 grid-template-columns: 1fr;
             }
@@ -62,28 +62,27 @@
         .card {
             background: rgba(255,255,255,0.1);
             backdrop-filter: blur(15px);
-            border-radius: 25px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 15px;
             border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
         }
 
         .card h3 {
             color: white;
-            margin-bottom: 15px;
-            font-size: 1.3em;
+            margin-bottom: 12px;
+            font-size: 1.2em;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         .camera-container {
             position: relative;
             background: #000;
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
             aspect-ratio: 4/3;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         #videoElement {
@@ -103,24 +102,24 @@
 
         .controls {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-top: 15px;
+            margin-top: 12px;
         }
 
         button {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 50px;
-            font-size: 16px;
+            border-radius: 40px;
+            font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             font-family: inherit;
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .btn-primary {
@@ -128,9 +127,9 @@
             color: white;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        .btn-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
         }
 
         .btn-danger {
@@ -141,74 +140,81 @@
         button:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-bottom: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .stat-card {
             background: rgba(0,0,0,0.5);
-            padding: 10px;
-            border-radius: 12px;
+            padding: 8px;
+            border-radius: 10px;
             text-align: center;
             color: white;
         }
 
         .stat-value {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
-            color: #667eea;
+            color: #38ef7d;
         }
 
         .stat-label {
-            font-size: 11px;
+            font-size: 10px;
             opacity: 0.8;
         }
 
         .results-area {
             background: rgba(0,0,0,0.5);
-            border-radius: 15px;
-            padding: 15px;
-            max-height: 500px;
+            border-radius: 12px;
+            padding: 12px;
+            max-height: 450px;
             overflow-y: auto;
             color: #e0e0e0;
-            line-height: 1.6;
+            line-height: 1.5;
+            font-size: 13px;
         }
 
-        .result-section {
-            margin-bottom: 20px;
-            padding: 10px;
+        .result-item {
+            margin-bottom: 12px;
+            padding: 8px;
             background: rgba(255,255,255,0.05);
-            border-radius: 12px;
+            border-radius: 10px;
+            border-right: 3px solid #38ef7d;
         }
 
         .result-title {
             color: #ffd700;
             font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-            border-right: 3px solid #ffd700;
-            padding-right: 10px;
+            margin-bottom: 6px;
+            font-size: 0.9em;
+        }
+
+        .face-info {
+            color: #00ff00;
+        }
+
+        .object-info {
+            color: #ff8888;
         }
 
         .loading {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-            padding: 20px;
+            gap: 8px;
+            padding: 15px;
         }
 
         .spinner {
-            width: 30px;
-            height: 30px;
-            border: 3px solid #667eea;
-            border-top: 3px solid transparent;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #667eea;
+            border-top: 2px solid transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -218,59 +224,49 @@
             100% { transform: rotate(360deg); }
         }
 
+        .status-text {
+            font-size: 11px;
+            color: #aaa;
+            margin-top: 8px;
+            text-align: center;
+        }
+
         .progress-bar {
             width: 100%;
-            height: 4px;
+            height: 3px;
             background: rgba(255,255,255,0.2);
             border-radius: 2px;
             overflow: hidden;
-            margin-top: 10px;
+            margin-top: 8px;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
+            background: linear-gradient(90deg, #38ef7d, #11998e);
             width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .status-text {
-            font-size: 12px;
-            color: #aaa;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .face-box {
-            border: 3px solid #00ff00;
-            position: absolute;
-        }
-
-        .object-box {
-            border: 2px solid #ff4444;
-            position: absolute;
+            transition: width 0.2s ease;
         }
 
         ::-webkit-scrollbar {
-            width: 8px;
+            width: 5px;
         }
 
         ::-webkit-scrollbar-track {
             background: rgba(255,255,255,0.1);
-            border-radius: 10px;
+            border-radius: 5px;
         }
 
         ::-webkit-scrollbar-thumb {
             background: #667eea;
-            border-radius: 10px;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>🧠 النظام البصري الفائق</h1>
-        <div class="badge">🚀 يعمل بـ Gemini AI | تحليل الوجه | قراءة النصوص | ترجمة فورية | كشف المجسمات</div>
+        <h1>⚡ الرؤية الفائقة السريعة</h1>
+        <div class="badge">🚀 تحليل فوري | كشف الوجوه والمجسمات | بدون تأخير</div>
     </div>
 
     <div class="grid">
@@ -284,34 +280,38 @@
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-value" id="faceCount">0</div>
-                    <div class="stat-label">الوجوه المكتشفة</div>
+                    <div class="stat-label">الوجوه</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="objectCount">0</div>
                     <div class="stat-label">المجسمات</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="textCount">0</div>
-                    <div class="stat-label">نصوص مقروءة</div>
+                    <div class="stat-value" id="fps">0</div>
+                    <div class="stat-label">FPS</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="status">✓</div>
+                    <div class="stat-label">الحالة</div>
                 </div>
             </div>
 
             <div class="controls">
-                <button id="analyzeBtn" class="btn-primary">🔍 تحليل شامل فوري</button>
-                <button id="continuousBtn" class="btn-primary">🔄 وضع التحليل المستمر</button>
+                <button id="startBtn" class="btn-success">▶️ تشغيل التحليل</button>
                 <button id="stopBtn" class="btn-danger">⏹️ إيقاف</button>
+                <button id="snapshotBtn" class="btn-primary">📸 التقاط تقرير</button>
             </div>
-            <div class="progress-bar" id="progressBar">
+            <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            <div class="status-text" id="statusText">✅ النظام جاهز | اضغط للتحليل</div>
+            <div class="status-text" id="statusText">✅ جاهز | اضغط "تشغيل التحليل"</div>
         </div>
 
         <div class="card">
-            <h3>📊 تقرير التحليل المتكامل</h3>
+            <h3>📊 التحليل الفوري</h3>
             <div class="results-area" id="resultsArea">
-                <div style="text-align: center; padding: 40px;">
-                    🤖 انتظر بدء التحليل...
+                <div style="text-align: center; padding: 20px; color: #888;">
+                    🔍 قم بتشغيل الكاميرا لبدء التحليل الفوري
                 </div>
             </div>
         </div>
@@ -323,32 +323,116 @@
 <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
 
 <script>
-    // ==================== المفتاح الخاص بـ Gemini API ====================
-    const GEMINI_API_KEY = 'AIzaSyBp1TTfZDQMN1XMUuGmXCkwyMzvoiqMO4E';
-    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
     // ==================== العناصر ====================
     const video = document.getElementById('videoElement');
     const canvas = document.getElementById('canvasOverlay');
     const ctx = canvas.getContext('2d');
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    const continuousBtn = document.getElementById('continuousBtn');
+    const startBtn = document.getElementById('startBtn');
     const stopBtn = document.getElementById('stopBtn');
+    const snapshotBtn = document.getElementById('snapshotBtn');
     const resultsArea = document.getElementById('resultsArea');
     const statusText = document.getElementById('statusText');
     const progressFill = document.getElementById('progressFill');
     const faceCountSpan = document.getElementById('faceCount');
     const objectCountSpan = document.getElementById('objectCount');
-    const textCountSpan = document.getElementById('textCount');
+    const fpsSpan = document.getElementById('fps');
+    const statusSpan = document.getElementById('status');
 
-    // متغيرات النماذج
+    // ==================== المتغيرات ====================
     let cocoModel = null;
-    let faceModelLoaded = false;
-    let isContinuous = false;
-    let continuousInterval = null;
+    let isAnalyzing = false;
+    let animationId = null;
     let currentStream = null;
+    let lastAnalysisTime = 0;
+    let fps = 0;
+    let frameCount = 0;
+    let lastFpsUpdate = 0;
+    
+    // قائمة المجسمات المعروفة
+    const objectCategories = {
+        'person': '👤 شخص',
+        'bicycle': '🚲 دراجة',
+        'car': '🚗 سيارة',
+        'motorcycle': '🏍️ دراجة نارية',
+        'airplane': '✈️ طائرة',
+        'bus': '🚌 حافلة',
+        'train': '🚂 قطار',
+        'truck': '🚚 شاحنة',
+        'boat': '⛵ قارب',
+        'traffic light': '🚦 إشارة مرور',
+        'fire hydrant': '🧯 صنبور إطفاء',
+        'stop sign': '🛑 علامة قف',
+        'parking meter': '🅿️ عداد مواقف',
+        'bench': '🪑 مقعد',
+        'bird': '🐦 طائر',
+        'cat': '🐱 قط',
+        'dog': '🐕 كلب',
+        'horse': '🐎 حصان',
+        'sheep': '🐑 خروف',
+        'cow': '🐮 بقرة',
+        'elephant': '🐘 فيل',
+        'bear': '🐻 دب',
+        'zebra': '🦓 حمار وحشي',
+        'giraffe': '🦒 زرافة',
+        'backpack': '🎒 حقيبة ظهر',
+        'umbrella': '☔ مظلة',
+        'handbag': '👜 حقيبة يد',
+        'tie': '👔 ربطة عنق',
+        'suitcase': '🧳 حقيبة سفر',
+        'frisbee': '🥏 طبق طائر',
+        'skis': '🎿 زلاجات',
+        'snowboard': '🏂 لوح ثلج',
+        'sports ball': '⚽ كرة رياضية',
+        'kite': '🪁 طائرة ورقية',
+        'baseball bat': '🏏 مضرب بيسبول',
+        'baseball glove': '🥎 قفاز بيسبول',
+        'skateboard': '🛹 لوح تزلج',
+        'surfboard': '🏄 لوح ركمجة',
+        'tennis racket': '🎾 مضرب تنس',
+        'bottle': '🍾 زجاجة',
+        'wine glass': '🍷 كأس نبيذ',
+        'cup': '🥤 كوب',
+        'fork': '🍴 شوكة',
+        'knife': '🔪 سكين',
+        'spoon': '🥄 ملعقة',
+        'bowl': '🥣 وعاء',
+        'banana': '🍌 موز',
+        'apple': '🍎 تفاح',
+        'sandwich': '🥪 شطيرة',
+        'orange': '🍊 برتقال',
+        'broccoli': '🥦 بروكلي',
+        'carrot': '🥕 جزر',
+        'hot dog': '🌭 هوت دوج',
+        'pizza': '🍕 بيتزا',
+        'donut': '🍩 دونات',
+        'cake': '🍰 كعكة',
+        'chair': '🪑 كرسي',
+        'couch': '🛋️ أريكة',
+        'potted plant': '🌿 نبات منزلي',
+        'bed': '🛏️ سرير',
+        'dining table': '🍽️ طاولة طعام',
+        'toilet': '🚽 مرحاض',
+        'tv': '📺 تلفاز',
+        'laptop': '💻 حاسوب محمول',
+        'mouse': '🖱️ فأرة',
+        'remote': '📟 جهاز تحكم',
+        'keyboard': '⌨️ لوحة مفاتيح',
+        'cell phone': '📱 هاتف',
+        'microwave': '🔥 ميكروويف',
+        'oven': '🔥 فرن',
+        'toaster': '🍞 محمصة',
+        'sink': '🚰 حوض',
+        'refrigerator': '🧊 ثلاجة',
+        'book': '📚 كتاب',
+        'clock': '🕰️ ساعة',
+        'vase': '🏺 مزهرية',
+        'scissors': '✂️ مقص',
+        'teddy bear': '🧸 دبدوب',
+        'hair drier': '💨 مجفف شعر',
+        'toothbrush': '🪥 فرشاة أسنان'
+    };
 
-    // ==================== 1. تشغيل الكاميرا ====================
+    // ==================== تشغيل الكاميرا ====================
     async function setupCamera() {
         try {
             if (currentStream) {
@@ -356,8 +440,8 @@
             }
             const stream = await navigator.mediaDevices.getUserMedia({ 
                 video: { 
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 },
+                    width: { ideal: 640 },
+                    height: { ideal: 480 },
                     facingMode: "user"
                 } 
             });
@@ -368,292 +452,282 @@
                 video.onloadedmetadata = () => {
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
-                    statusText.innerHTML = '✅ الكاميرا جاهزة | النماذج قيد التحميل...';
+                    statusText.innerHTML = '✅ الكاميرا جاهزة';
+                    statusSpan.innerHTML = '✓';
                     resolve();
                 };
             });
         } catch (err) {
             statusText.innerHTML = '❌ خطأ في الكاميرا: ' + err.message;
+            statusSpan.innerHTML = '✗';
             console.error(err);
         }
     }
 
-    // ==================== 2. تحميل النماذج ====================
-    async function loadAllModels() {
-        statusText.innerHTML = '📦 تحميل نماذج الذكاء الاصطناعي...';
+    // ==================== تحميل النماذج ====================
+    async function loadModels() {
+        statusText.innerHTML = '📦 تحميل النماذج...';
         progressFill.style.width = '30%';
         
+        // تحميل COCO-SSD
         cocoModel = await cocoSsd.load();
         progressFill.style.width = '60%';
-        statusText.innerHTML = '✅ تم تحميل نموذج المجسمات | جاري تحميل نموذج الوجوه...';
+        statusText.innerHTML = '📦 تحميل نموذج الوجوه...';
         
+        // تحميل Face-API
         await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
-        await faceapi.nets.faceLandmark68Net.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
         await faceapi.nets.faceExpressionNet.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
-        await faceapi.nets.ageGenderNet.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
         
-        faceModelLoaded = true;
         progressFill.style.width = '100%';
-        statusText.innerHTML = '✅ جميع النماذج جاهزة! اضغط "تحليل شامل"';
+        statusText.innerHTML = '✅ النماذج جاهزة! اضغط "تشغيل"';
+        statusSpan.innerHTML = '✓';
         
         setTimeout(() => {
             progressFill.style.width = '0%';
-        }, 2000);
+        }, 1000);
     }
 
-    // ==================== 3. رسم المربعات ====================
-    function drawBoxes(faces, objects) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        if (faces && faces.length) {
-            faces.forEach(face => {
-                const box = face.detection.box;
-                ctx.strokeStyle = '#00ff00';
-                ctx.lineWidth = 3;
-                ctx.strokeRect(box.x, box.y, box.width, box.height);
-                
-                ctx.fillStyle = '#00ff00';
-                ctx.font = 'bold 14px Cairo';
-                let info = '';
-                if (face.age) info += `عمر: ${Math.round(face.age)} `;
-                if (face.gender) info += `جنس: ${face.gender === 'male' ? 'ذكر' : 'أنثى'} `;
-                ctx.fillText(info, box.x, box.y - 5);
-            });
-        }
-        
-        if (objects && objects.length) {
-            objects.forEach(obj => {
-                ctx.strokeStyle = '#ff4444';
-                ctx.lineWidth = 2;
-                ctx.strokeRect(obj.bbox[0], obj.bbox[1], obj.bbox[2], obj.bbox[3]);
-                ctx.fillStyle = '#ff4444';
-                ctx.font = '12px Cairo';
-                ctx.fillText(`${obj.class} (${Math.round(obj.score * 100)}%)`, obj.bbox[0], obj.bbox[1] - 3);
-            });
-        }
-    }
-
-    // ==================== 4. التحليل المحلي ====================
-    async function localAnalysis() {
-        if (!cocoModel || !faceModelLoaded) return { faces: [], objects: [] };
-        
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        
-        let faces = [];
+    // ==================== تحليل الوجوه ====================
+    async function detectFaces() {
         try {
             const detections = await faceapi.detectAllFaces(
-                imageData, 
+                video,
                 new faceapi.TinyFaceDetectorOptions()
-            ).withAgeAndGender().withFaceExpressions();
+            ).withFaceExpressions();
             
-            faces = detections.map(d => ({
-                detection: d.detection,
-                age: d.age,
-                gender: d.gender,
+            return detections.map(d => ({
+                box: d.detection.box,
                 expressions: d.expressions
             }));
         } catch (e) {
-            console.warn('Face detection error:', e);
+            return [];
         }
-        
-        let objects = [];
+    }
+
+    // ==================== تحليل المجسمات ====================
+    async function detectObjects() {
         try {
-            objects = await cocoModel.detect(canvas);
+            const predictions = await cocoModel.detect(video);
+            return predictions.filter(p => p.score > 0.5);
         } catch (e) {
-            console.warn('Object detection error:', e);
+            return [];
         }
-        
-        faceCountSpan.innerText = faces.length;
-        objectCountSpan.innerText = objects.length;
-        
-        drawBoxes(faces, objects);
-        
-        return { faces, objects };
     }
 
-    // ==================== 5. التحليل العميق بـ Gemini ====================
-    async function deepAnalysisWithGemini(imageBase64, localData) {
-        const prompt = `أنت خبير عالمي في تحليل الصور ورؤية الكمبيوتر. انظر إلى هذه الصورة بعناية فائقة وأعطيني تحليلاً شاملاً باللغة العربية الفصحى.
+    // ==================== رسم النتائج على Canvas ====================
+    function drawResults(faces, objects) {
+        // مسح الـ Canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // رسم إطار الفيديو
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // رسم مربعات الوجوه
+        faces.forEach(face => {
+            const box = face.box;
+            ctx.strokeStyle = '#00ff00';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(box.x, box.y, box.width, box.height);
+            
+            // رسم المشاعر
+            ctx.fillStyle = '#00ff00';
+            ctx.font = 'bold 14px Cairo';
+            const topEmotion = Object.entries(face.expressions).sort((a,b) => b[1] - a[1])[0];
+            const emotionText = getEmotionArabic(topEmotion[0]);
+            ctx.fillText(`😊 ${emotionText}`, box.x, box.y - 5);
+        });
+        
+        // رسم مربعات المجسمات
+        objects.forEach(obj => {
+            ctx.strokeStyle = '#ff4444';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(obj.bbox[0], obj.bbox[1], obj.bbox[2], obj.bbox[3]);
+            
+            ctx.fillStyle = '#ff4444';
+            ctx.font = '12px Cairo';
+            const objName = objectCategories[obj.class] || obj.class;
+            ctx.fillText(`${objName} ${Math.round(obj.score * 100)}%`, obj.bbox[0], obj.bbox[1] - 3);
+        });
+    }
 
-المطلوب منك بدقة عالية:
+    // ==================== ترجمة المشاعر ====================
+    function getEmotionArabic(emotion) {
+        const emotions = {
+            'neutral': 'محايد',
+            'happy': 'سعيد 😊',
+            'sad': 'حزين 😢',
+            'angry': 'غاضب 😠',
+            'fearful': 'خائف 😨',
+            'disgusted': 'مشمئز 🤢',
+            'surprised': 'متفاجئ 😲'
+        };
+        return emotions[emotion] || emotion;
+    }
 
-1. **تحليل الوجوه (إن وجدت):**
-   - لكل شخص: العمر التقريبي، الجنس (ذكر/أنثى)، الحالة العاطفية (سعيد، حزين، غاضب، محايد، متفاجئ)
-   - الأصل العرقي المقترح (عربي، أوروبي، أفريقي، آسيوي)
-   - الدولة المحتملة بناءً على ملامح الوجه والملابس (مثل: مصر، السعودية، المغرب، الهند، الصين، فرنسا...)
-
-2. **المجسمات والأشياء:**
-   - اذكر كل المجسمات الموجودة في الصورة مع نسبة الثقة
-   - صنفها إلى: حيوانات، نباتات، مركبات، أثاث، أجهزة إلكترونية، أدوات
-
-3. **النصوص والكتابات:**
-   - إذا وجدت أي نصوص مكتوبة بأي لغة (عربية، إنجليزية، صينية، فرنسية، ألمانية، روسية، يابانية...)
-   - اقرأ النص الأصلي بدقة
-   - ثم ترجمه فوراً إلى اللغة العربية
-
-4. **البيئة والمشهد العام:**
-   - وصف المكان (داخلي/خارجي، مدينة/ريف، مطعم/منزل/شارع/مكتب)
-   - حالة الإضاءة (ممتازة/متوسطة/ضعيفة)
-   - الألوان السائدة
-   - الطقس (مشمس/غائم/ممطر) إن كان المشهد خارجياً
-
-5. **تحليل إضافي ذكي:**
-   - التوقيت المحتمل (صباح/مساء/ليل)
-   - النشاط المحتمل للأشخاص
-   - أي تفاصيل فريدة أو مثيرة للاهتمام
-
-قدم الإجابة بشكل منظم وجميل باستخدام عناوين ونقاط. كن دقيقاً ومفصلاً قدر الإمكان.`;
-
-        try {
-            const requestBody = {
-                contents: [{
-                    parts: [
-                        { text: prompt },
-                        {
-                            inline_data: {
-                                mime_type: "image/jpeg",
-                                data: imageBase64
-                            }
-                        }
-                    ]
-                }],
-                generationConfig: {
-                    temperature: 0.3,
-                    maxOutputTokens: 4096,
-                    topP: 0.95
-                }
-            };
-
-            const response = await fetch(GEMINI_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(requestBody)
+    // ==================== تحديث واجهة النتائج ====================
+    function updateResultsUI(faces, objects) {
+        let html = '';
+        
+        // الوجوه
+        if (faces.length > 0) {
+            html += `<div class="result-item">
+                <div class="result-title">👥 الوجوه المكتشفة (${faces.length})</div>`;
+            faces.forEach((face, i) => {
+                const topEmotion = Object.entries(face.expressions).sort((a,b) => b[1] - a[1])[0];
+                html += `<div class="face-info">• الشخص ${i+1}: ${getEmotionArabic(topEmotion[0])} (${Math.round(topEmotion[1] * 100)}%)</div>`;
             });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(`API Error: ${errorData.error?.message || response.statusText}`);
-            }
-
-            const data = await response.json();
-            const analysisText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-            
-            if (!analysisText) {
-                return "⚠️ لم يتم الحصول على تحليل من النموذج.";
-            }
-            
-            return analysisText;
-            
-        } catch (error) {
-            console.error('Gemini API Error:', error);
-            return `❌ خطأ في الاتصال بـ Gemini API: ${error.message}\n\nيرجى التحقق من اتصال الإنترنت.`;
+            html += `</div>`;
         }
+        
+        // المجسمات
+        if (objects.length > 0) {
+            html += `<div class="result-item">
+                <div class="result-title">📦 المجسمات المكتشفة (${objects.length})</div>`;
+            objects.forEach(obj => {
+                const objName = objectCategories[obj.class] || obj.class;
+                html += `<div class="object-info">• ${objName} - ${Math.round(obj.score * 100)}%</div>`;
+            });
+            html += `</div>`;
+        }
+        
+        // إذا لم يتم اكتشاف شيء
+        if (faces.length === 0 && objects.length === 0) {
+            html = `<div class="result-item">
+                <div class="result-title">🔍 لا توجد اكتشافات</div>
+                <div style="color: #888;">حاول التحرك أو وضع أشياء أمام الكاميرا</div>
+            </div>`;
+        }
+        
+        // إضافة معلومات الأداء
+        html += `<div class="result-item">
+            <div class="result-title">⚡ معلومات الأداء</div>
+            <div>• معدل الإطارات: ${fps} FPS</div>
+            <div>• وقت التحليل: ${lastAnalysisTime.toFixed(1)} ms</div>
+            <div>• الحالة: ${isAnalyzing ? '🟢 يعمل' : '⏹️ متوقف'}</div>
+        </div>`;
+        
+        resultsArea.innerHTML = html;
     }
 
-    // ==================== 6. التحليل الكامل ====================
-    async function performFullAnalysis() {
-        statusText.innerHTML = '📸 جاري التقاط الصورة وتحليلها...';
-        analyzeBtn.disabled = true;
-        continuousBtn.disabled = true;
-        progressFill.style.width = '10%';
+    // ==================== حلقة التحليل الرئيسية ====================
+    async function analysisLoop() {
+        if (!isAnalyzing) return;
+        
+        const startTime = performance.now();
         
         try {
-            // التحليل المحلي
-            const localData = await localAnalysis();
-            progressFill.style.width = '30%';
+            // تنفيذ التحليل
+            const [faces, objects] = await Promise.all([
+                detectFaces(),
+                detectObjects()
+            ]);
             
-            // التقاط الصورة
-            const imageBase64 = canvas.toDataURL('image/jpeg', 0.9).split(',')[1];
-            progressFill.style.width = '50%';
+            const endTime = performance.now();
+            lastAnalysisTime = endTime - startTime;
             
-            statusText.innerHTML = '🧠 جاري التحليل العميق بواسطة Gemini AI...';
+            // تحديث الإحصائيات
+            faceCountSpan.innerText = faces.length;
+            objectCountSpan.innerText = objects.length;
             
-            // التحليل العميق
-            const deepResult = await deepAnalysisWithGemini(imageBase64, localData);
-            progressFill.style.width = '100%';
+            // رسم النتائج
+            drawResults(faces, objects);
             
-            // عرض النتائج مع تنسيق
-            let formattedResult = deepResult.replace(/\n/g, '<br>');
-            formattedResult = formattedResult.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            formattedResult = formattedResult.replace(/### (.*?)/g, '<div class="result-title">$1</div>');
+            // تحديث واجهة النتائج
+            updateResultsUI(faces, objects);
             
-            resultsArea.innerHTML = `
-                <div class="result-section">
-                    ${formattedResult}
-                </div>
-                <div class="result-section">
-                    <div class="result-title">📊 ملخص سريع</div>
-                    <div>👥 الوجوه المكتشفة: ${localData.faces.length}<br>
-                    📦 المجسمات: ${localData.objects.length}<br>
-                    🤖 تم التحليل بواسطة: Gemini 1.5 Flash + FaceAPI + COCO-SSD</div>
-                </div>
-            `;
+            // تحديث FPS
+            frameCount++;
+            const now = performance.now();
+            if (now - lastFpsUpdate >= 1000) {
+                fps = frameCount;
+                fpsSpan.innerText = fps;
+                frameCount = 0;
+                lastFpsUpdate = now;
+            }
             
-            statusText.innerHTML = '✅ اكتمل التحليل بنجاح!';
+            statusSpan.innerHTML = '✓';
+            statusText.innerHTML = '🟢 التحليل يعمل بسلاسة';
             
         } catch (error) {
             console.error('Analysis error:', error);
-            resultsArea.innerHTML = `<div class="result-section" style="color: #ff6666;">❌ خطأ في التحليل: ${error.message}</div>`;
-            statusText.innerHTML = '❌ فشل التحليل';
-        } finally {
-            analyzeBtn.disabled = false;
-            continuousBtn.disabled = false;
-            setTimeout(() => {
-                progressFill.style.width = '0%';
-            }, 1000);
+            statusSpan.innerHTML = '⚠️';
         }
-    }
-
-    // ==================== 7. التحليل المستمر ====================
-    function startContinuousAnalysis() {
-        if (isContinuous) return;
-        isContinuous = true;
-        continuousBtn.disabled = true;
-        analyzeBtn.disabled = true;
-        statusText.innerHTML = '🔄 وضع التحليل المستمر - يعمل كل 3 ثوان';
         
-        continuousInterval = setInterval(async () => {
-            if (isContinuous) {
-                await localAnalysis();
-            }
-        }, 3000);
-    }
-    
-    function stopContinuousAnalysis() {
-        isContinuous = false;
-        if (continuousInterval) {
-            clearInterval(continuousInterval);
-            continuousInterval = null;
+        // استدعاء الحلقة التالية
+        if (isAnalyzing) {
+            requestAnimationFrame(() => analysisLoop());
         }
-        continuousBtn.disabled = false;
-        analyzeBtn.disabled = false;
-        statusText.innerHTML = '⏹️ تم إيقاف التحليل المستمر';
     }
 
-    // ==================== 8. تشغيل التطبيق ====================
+    // ==================== بدء التحليل ====================
+    function startAnalysis() {
+        if (isAnalyzing) return;
+        
+        isAnalyzing = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        snapshotBtn.disabled = false;
+        
+        statusText.innerHTML = '🟢 التحليل يعمل...';
+        statusSpan.innerHTML = '✓';
+        
+        // بدء الحلقة
+        analysisLoop();
+    }
+
+    // ==================== إيقاف التحليل ====================
+    function stopAnalysis() {
+        isAnalyzing = false;
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        
+        statusText.innerHTML = '⏹️ متوقف | اضغط "تشغيل" للمتابعة';
+        statusSpan.innerHTML = '⏹️';
+        
+        // مسح الـ Canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        resultsArea.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">⏹️ التحليل متوقف. اضغط "تشغيل" للمتابعة</div>';
+    }
+
+    // ==================== التقاط تقرير ====================
+    function takeSnapshot() {
+        if (!isAnalyzing) {
+            statusText.innerHTML = '⚠️ قم بتشغيل التحليل أولاً';
+            return;
+        }
+        
+        // إنشاء رابط لتحميل الصورة
+        const link = document.createElement('a');
+        link.download = `snapshot_${new Date().toISOString().slice(0,19)}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
+        
+        statusText.innerHTML = '📸 تم حفظ التقرير';
+        setTimeout(() => {
+            if (isAnalyzing) statusText.innerHTML = '🟢 التحليل يعمل بسلاسة';
+        }, 2000);
+    }
+
+    // ==================== التشغيل ====================
     async function init() {
         await setupCamera();
-        await loadAllModels();
+        await loadModels();
         
-        function updateVideoFrame() {
+        // إضافة مستمعي الأحداث
+        startBtn.addEventListener('click', startAnalysis);
+        stopBtn.addEventListener('click', stopAnalysis);
+        snapshotBtn.addEventListener('click', takeSnapshot);
+        
+        // عرض الإطار الأول
+        function drawInitialFrame() {
             if (video.readyState === 4) {
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             }
-            requestAnimationFrame(updateVideoFrame);
+            requestAnimationFrame(drawInitialFrame);
         }
-        updateVideoFrame();
-        
-        analyzeBtn.addEventListener('click', performFullAnalysis);
-        continuousBtn.addEventListener('click', startContinuousAnalysis);
-        stopBtn.addEventListener('click', stopContinuousAnalysis);
-        
-        // تحديث إحصائيات النصوص (غير متاح في هذه النسخة)
-        setInterval(() => {
-            if (textCountSpan.innerText === '0') {
-                // سيتم تفعيل OCR لاحقاً
-            }
-        }, 5000);
+        drawInitialFrame();
     }
     
     init();

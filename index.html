@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>الرؤية الفائقة - تحليل فوري وسريع</title>
+    <title>النظام البصري السريع - تحليل فوري</title>
     <style>
         * {
             margin: 0;
@@ -12,8 +12,8 @@
         }
 
         body {
-            font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 15px;
             direction: rtl;
@@ -31,49 +31,41 @@
         }
 
         .header h1 {
-            font-size: 1.8em;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-size: 1.6em;
+            margin-bottom: 5px;
         }
 
         .badge {
-            display: inline-block;
             background: rgba(255,255,255,0.2);
             padding: 4px 12px;
             border-radius: 50px;
             font-size: 11px;
-            margin-top: 8px;
+            display: inline-block;
         }
 
         .grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 15px;
         }
 
-        @media (max-width: 900px) {
+        @media (max-width: 800px) {
             .grid {
                 grid-template-columns: 1fr;
             }
         }
 
         .card {
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(15px);
+            background: rgba(255,255,255,0.95);
             border-radius: 20px;
             padding: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
         .card h3 {
-            color: white;
+            color: #333;
             margin-bottom: 12px;
-            font-size: 1.2em;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            font-size: 1.1em;
         }
 
         .camera-container {
@@ -97,29 +89,25 @@
             left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
         }
 
         .controls {
             display: flex;
             gap: 10px;
-            flex-wrap: wrap;
             justify-content: center;
             margin-top: 12px;
+            flex-wrap: wrap;
         }
 
         button {
             padding: 10px 20px;
             border: none;
-            border-radius: 40px;
+            border-radius: 50px;
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: 0.2s;
             font-family: inherit;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
         }
 
         .btn-primary {
@@ -128,18 +116,18 @@
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
+            background: #28a745;
             color: white;
         }
 
         .btn-danger {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
+            background: #dc3545;
             color: white;
         }
 
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
         }
 
         .stats {
@@ -150,71 +138,71 @@
         }
 
         .stat-card {
-            background: rgba(0,0,0,0.5);
+            background: #f0f0f0;
             padding: 8px;
             border-radius: 10px;
             text-align: center;
-            color: white;
         }
 
         .stat-value {
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
-            color: #38ef7d;
+            color: #667eea;
         }
 
         .stat-label {
             font-size: 10px;
-            opacity: 0.8;
+            color: #666;
         }
 
         .results-area {
-            background: rgba(0,0,0,0.5);
+            background: #f8f9fa;
             border-radius: 12px;
             padding: 12px;
             max-height: 450px;
             overflow-y: auto;
-            color: #e0e0e0;
-            line-height: 1.5;
             font-size: 13px;
         }
 
-        .result-item {
-            margin-bottom: 12px;
-            padding: 8px;
-            background: rgba(255,255,255,0.05);
+        .result-card {
+            background: white;
+            margin-bottom: 10px;
+            padding: 10px;
             border-radius: 10px;
-            border-right: 3px solid #38ef7d;
+            border-right: 4px solid #667eea;
         }
 
         .result-title {
-            color: #ffd700;
             font-weight: bold;
-            margin-bottom: 6px;
-            font-size: 0.9em;
+            color: #667eea;
+            margin-bottom: 5px;
         }
 
-        .face-info {
-            color: #00ff00;
+        .motion-detected {
+            background: #fff3cd;
+            border-right-color: #ffc107;
         }
 
-        .object-info {
-            color: #ff8888;
+        .text-detected {
+            background: #d4edda;
+            border-right-color: #28a745;
         }
 
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 15px;
+        .status-bar {
+            background: #e9ecef;
+            padding: 8px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 12px;
+            text-align: center;
         }
 
         .spinner {
-            width: 20px;
-            height: 20px;
-            border: 2px solid #667eea;
-            border-top: 2px solid transparent;
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -224,213 +212,115 @@
             100% { transform: rotate(360deg); }
         }
 
-        .status-text {
-            font-size: 11px;
-            color: #aaa;
-            margin-top: 8px;
-            text-align: center;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 3px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 8px;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #38ef7d, #11998e);
-            width: 0%;
-            transition: width 0.2s ease;
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
+        .fps-counter {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: #0f0;
+            padding: 2px 6px;
             border-radius: 5px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #667eea;
-            border-radius: 5px;
+            font-size: 10px;
+            font-family: monospace;
+            z-index: 10;
         }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <h1>⚡ الرؤية الفائقة السريعة</h1>
-        <div class="badge">🚀 تحليل فوري | كشف الوجوه والمجسمات | بدون تأخير</div>
+        <h1>⚡ النظام البصري السريع</h1>
+        <div class="badge">🚀 تحليل فائق السرعة | كشف الحركة | التعرف على النصوص</div>
     </div>
 
     <div class="grid">
         <div class="card">
-            <h3>📷 كاميرا التحليل المباشر</h3>
+            <h3>📷 الكاميرا والتحكم</h3>
             <div class="camera-container">
                 <video id="videoElement" autoplay playsinline muted></video>
                 <canvas id="canvasOverlay"></canvas>
+                <div class="fps-counter" id="fpsCounter">FPS: 0</div>
             </div>
             
             <div class="stats">
                 <div class="stat-card">
-                    <div class="stat-value" id="faceCount">0</div>
+                    <div class="stat-value" id="motionValue">0</div>
+                    <div class="stat-label">الحركة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="brightnessValue">0</div>
+                    <div class="stat-label">الإضاءة</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="facesValue">0</div>
                     <div class="stat-label">الوجوه</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-value" id="objectCount">0</div>
-                    <div class="stat-label">المجسمات</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="fps">0</div>
-                    <div class="stat-label">FPS</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="status">✓</div>
-                    <div class="stat-label">الحالة</div>
+                    <div class="stat-value" id="textsValue">0</div>
+                    <div class="stat-label">النصوص</div>
                 </div>
             </div>
 
             <div class="controls">
-                <button id="startBtn" class="btn-success">▶️ تشغيل التحليل</button>
-                <button id="stopBtn" class="btn-danger">⏹️ إيقاف</button>
-                <button id="snapshotBtn" class="btn-primary">📸 التقاط تقرير</button>
+                <button id="startMotionBtn" class="btn-success">▶️ تشغيل</button>
+                <button id="stopMotionBtn" class="btn-danger">⏹️ إيقاف</button>
+                <button id="ocrBtn" class="btn-primary">🔍 قراءة النصوص</button>
+                <button id="clearBtn" class="btn-warning">🗑️ مسح</button>
             </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
+            <div class="status-bar" id="statusBar">
+                ✅ النظام جاهز | اضغط "تشغيل"
             </div>
-            <div class="status-text" id="statusText">✅ جاهز | اضغط "تشغيل التحليل"</div>
         </div>
 
         <div class="card">
-            <h3>📊 التحليل الفوري</h3>
+            <h3>📊 نتائج التحليل</h3>
             <div class="results-area" id="resultsArea">
-                <div style="text-align: center; padding: 20px; color: #888;">
-                    🔍 قم بتشغيل الكاميرا لبدء التحليل الفوري
+                <div style="text-align: center; padding: 20px; color: #999;">
+                    ✨ انتظر بدء التحليل...
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.15.0"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd@2.2.2"></script>
-<script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <script>
     // ==================== العناصر ====================
     const video = document.getElementById('videoElement');
     const canvas = document.getElementById('canvasOverlay');
     const ctx = canvas.getContext('2d');
-    const startBtn = document.getElementById('startBtn');
-    const stopBtn = document.getElementById('stopBtn');
-    const snapshotBtn = document.getElementById('snapshotBtn');
+    const startMotionBtn = document.getElementById('startMotionBtn');
+    const stopMotionBtn = document.getElementById('stopMotionBtn');
+    const ocrBtn = document.getElementById('ocrBtn');
+    const clearBtn = document.getElementById('clearBtn');
     const resultsArea = document.getElementById('resultsArea');
-    const statusText = document.getElementById('statusText');
-    const progressFill = document.getElementById('progressFill');
-    const faceCountSpan = document.getElementById('faceCount');
-    const objectCountSpan = document.getElementById('objectCount');
-    const fpsSpan = document.getElementById('fps');
-    const statusSpan = document.getElementById('status');
+    const statusBar = document.getElementById('statusBar');
+    const motionValue = document.getElementById('motionValue');
+    const brightnessValue = document.getElementById('brightnessValue');
+    const facesValue = document.getElementById('facesValue');
+    const textsValue = document.getElementById('textsValue');
+    const fpsCounter = document.getElementById('fpsCounter');
 
     // ==================== المتغيرات ====================
-    let cocoModel = null;
-    let isAnalyzing = false;
+    let isRunning = false;
     let animationId = null;
     let currentStream = null;
-    let lastAnalysisTime = 0;
+    let previousFrame = null;
     let fps = 0;
     let frameCount = 0;
     let lastFpsUpdate = 0;
+    let lastMotionSum = 0;
+    let lastBrightness = 0;
     
-    // قائمة المجسمات المعروفة
-    const objectCategories = {
-        'person': '👤 شخص',
-        'bicycle': '🚲 دراجة',
-        'car': '🚗 سيارة',
-        'motorcycle': '🏍️ دراجة نارية',
-        'airplane': '✈️ طائرة',
-        'bus': '🚌 حافلة',
-        'train': '🚂 قطار',
-        'truck': '🚚 شاحنة',
-        'boat': '⛵ قارب',
-        'traffic light': '🚦 إشارة مرور',
-        'fire hydrant': '🧯 صنبور إطفاء',
-        'stop sign': '🛑 علامة قف',
-        'parking meter': '🅿️ عداد مواقف',
-        'bench': '🪑 مقعد',
-        'bird': '🐦 طائر',
-        'cat': '🐱 قط',
-        'dog': '🐕 كلب',
-        'horse': '🐎 حصان',
-        'sheep': '🐑 خروف',
-        'cow': '🐮 بقرة',
-        'elephant': '🐘 فيل',
-        'bear': '🐻 دب',
-        'zebra': '🦓 حمار وحشي',
-        'giraffe': '🦒 زرافة',
-        'backpack': '🎒 حقيبة ظهر',
-        'umbrella': '☔ مظلة',
-        'handbag': '👜 حقيبة يد',
-        'tie': '👔 ربطة عنق',
-        'suitcase': '🧳 حقيبة سفر',
-        'frisbee': '🥏 طبق طائر',
-        'skis': '🎿 زلاجات',
-        'snowboard': '🏂 لوح ثلج',
-        'sports ball': '⚽ كرة رياضية',
-        'kite': '🪁 طائرة ورقية',
-        'baseball bat': '🏏 مضرب بيسبول',
-        'baseball glove': '🥎 قفاز بيسبول',
-        'skateboard': '🛹 لوح تزلج',
-        'surfboard': '🏄 لوح ركمجة',
-        'tennis racket': '🎾 مضرب تنس',
-        'bottle': '🍾 زجاجة',
-        'wine glass': '🍷 كأس نبيذ',
-        'cup': '🥤 كوب',
-        'fork': '🍴 شوكة',
-        'knife': '🔪 سكين',
-        'spoon': '🥄 ملعقة',
-        'bowl': '🥣 وعاء',
-        'banana': '🍌 موز',
-        'apple': '🍎 تفاح',
-        'sandwich': '🥪 شطيرة',
-        'orange': '🍊 برتقال',
-        'broccoli': '🥦 بروكلي',
-        'carrot': '🥕 جزر',
-        'hot dog': '🌭 هوت دوج',
-        'pizza': '🍕 بيتزا',
-        'donut': '🍩 دونات',
-        'cake': '🍰 كعكة',
-        'chair': '🪑 كرسي',
-        'couch': '🛋️ أريكة',
-        'potted plant': '🌿 نبات منزلي',
-        'bed': '🛏️ سرير',
-        'dining table': '🍽️ طاولة طعام',
-        'toilet': '🚽 مرحاض',
-        'tv': '📺 تلفاز',
-        'laptop': '💻 حاسوب محمول',
-        'mouse': '🖱️ فأرة',
-        'remote': '📟 جهاز تحكم',
-        'keyboard': '⌨️ لوحة مفاتيح',
-        'cell phone': '📱 هاتف',
-        'microwave': '🔥 ميكروويف',
-        'oven': '🔥 فرن',
-        'toaster': '🍞 محمصة',
-        'sink': '🚰 حوض',
-        'refrigerator': '🧊 ثلاجة',
-        'book': '📚 كتاب',
-        'clock': '🕰️ ساعة',
-        'vase': '🏺 مزهرية',
-        'scissors': '✂️ مقص',
-        'teddy bear': '🧸 دبدوب',
-        'hair drier': '💨 مجفف شعر',
-        'toothbrush': '🪥 فرشاة أسنان'
-    };
+    // كشف الوجوه البسيط (باستخدام الفروق)
+    let faceDetected = false;
+    let lastFaceCheck = 0;
+    
+    // Tesseract OCR
+    const worker = Tesseract.createWorker({
+        logger: m => console.log(m)
+    });
 
     // ==================== تشغيل الكاميرا ====================
     async function setupCamera() {
@@ -442,7 +332,7 @@
                 video: { 
                     width: { ideal: 640 },
                     height: { ideal: 480 },
-                    facingMode: "user"
+                    facingMode: "environment"
                 } 
             });
             currentStream = stream;
@@ -452,224 +342,248 @@
                 video.onloadedmetadata = () => {
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
-                    statusText.innerHTML = '✅ الكاميرا جاهزة';
-                    statusSpan.innerHTML = '✓';
+                    statusBar.innerHTML = '✅ الكاميرا جاهزة | اضغط "تشغيل"';
                     resolve();
                 };
             });
         } catch (err) {
-            statusText.innerHTML = '❌ خطأ في الكاميرا: ' + err.message;
-            statusSpan.innerHTML = '✗';
+            statusBar.innerHTML = '❌ خطأ: ' + err.message;
             console.error(err);
         }
     }
 
-    // ==================== تحميل النماذج ====================
-    async function loadModels() {
-        statusText.innerHTML = '📦 تحميل النماذج...';
-        progressFill.style.width = '30%';
+    // ==================== تحليل الصورة ====================
+    function analyzeImage(frame) {
+        if (!frame) return { motion: 0, brightness: 0, hasFace: false };
         
-        // تحميل COCO-SSD
-        cocoModel = await cocoSsd.load();
-        progressFill.style.width = '60%';
-        statusText.innerHTML = '📦 تحميل نموذج الوجوه...';
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
         
-        // تحميل Face-API
-        await faceapi.nets.tinyFaceDetector.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
-        await faceapi.nets.faceExpressionNet.loadFromUri('https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights');
+        // حساب السطوع
+        let sum = 0;
+        for (let i = 0; i < data.length; i += 4) {
+            const brightness = (data[i] + data[i+1] + data[i+2]) / 3;
+            sum += brightness;
+        }
+        const avgBrightness = sum / (data.length / 4);
         
-        progressFill.style.width = '100%';
-        statusText.innerHTML = '✅ النماذج جاهزة! اضغط "تشغيل"';
-        statusSpan.innerHTML = '✓';
+        // كشف الحركة (مقارنة مع الإطار السابق)
+        let motion = 0;
+        if (previousFrame) {
+            let motionSum = 0;
+            const prevData = previousFrame.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const diff = Math.abs(data[i] - prevData[i]) + 
+                           Math.abs(data[i+1] - prevData[i+1]) + 
+                           Math.abs(data[i+2] - prevData[i+2]);
+                if (diff > 30) motionSum++;
+            }
+            motion = (motionSum / (data.length / 4)) * 100;
+        }
         
-        setTimeout(() => {
-            progressFill.style.width = '0%';
-        }, 1000);
+        // كشف بسيط للوجوه (البحث عن مناطق دائرية ذات لون بشرة)
+        let hasFace = false;
+        if (avgBrightness > 50 && avgBrightness < 200) {
+            // كشف لون البشرة التقريبي
+            let skinPixels = 0;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i+1];
+                const b = data[i+2];
+                // نطاق لون البشرة التقريبي
+                if (r > 80 && r < 255 && g > 40 && g < 200 && b > 20 && b < 180 && r > g && r > b) {
+                    skinPixels++;
+                }
+            }
+            const skinRatio = skinPixels / (data.length / 4);
+            hasFace = skinRatio > 0.05 && skinRatio < 0.3;
+        }
+        
+        // حفظ الإطار الحالي
+        previousFrame = imageData;
+        
+        return { motion, brightness: avgBrightness, hasFace };
     }
 
-    // ==================== تحليل الوجوه ====================
+    // ==================== كشف الوجوه المتقدم ====================
     async function detectFaces() {
+        // استخدام طريقة بسيطة للكشف عن الوجوه عبر Canvas API
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        
+        // البحث عن مناطق مشرقة بشكل دائري (تقريب الوجه)
+        let faceCount = 0;
+        const step = 20;
+        for (let y = 0; y < canvas.height; y += step) {
+            for (let x = 0; x < canvas.width; x += step) {
+                const idx = (y * canvas.width + x) * 4;
+                const r = imageData.data[idx];
+                const g = imageData.data[idx+1];
+                const b = imageData.data[idx+2];
+                
+                // فحص لون البشرة
+                if (r > 100 && r < 250 && g > 50 && g < 200 && b > 30 && b < 180 && r > g && r > b) {
+                    faceCount++;
+                }
+            }
+        }
+        
+        return Math.min(Math.floor(faceCount / 50), 5);
+    }
+
+    // ==================== OCR ====================
+    async function performOCR() {
+        statusBar.innerHTML = '📖 جاري قراءة النصوص...';
+        ocrBtn.disabled = true;
+        
         try {
-            const detections = await faceapi.detectAllFaces(
-                video,
-                new faceapi.TinyFaceDetectorOptions()
-            ).withFaceExpressions();
+            await worker.load();
+            await worker.loadLanguage('ara+eng');
+            await worker.initialize('ara+eng');
             
-            return detections.map(d => ({
-                box: d.detection.box,
-                expressions: d.expressions
-            }));
-        } catch (e) {
-            return [];
-        }
-    }
-
-    // ==================== تحليل المجسمات ====================
-    async function detectObjects() {
-        try {
-            const predictions = await cocoModel.detect(video);
-            return predictions.filter(p => p.score > 0.5);
-        } catch (e) {
-            return [];
-        }
-    }
-
-    // ==================== رسم النتائج على Canvas ====================
-    function drawResults(faces, objects) {
-        // مسح الـ Canvas
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // رسم إطار الفيديو
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        // رسم مربعات الوجوه
-        faces.forEach(face => {
-            const box = face.box;
-            ctx.strokeStyle = '#00ff00';
-            ctx.lineWidth = 3;
-            ctx.strokeRect(box.x, box.y, box.width, box.height);
+            // التقاط صورة من الفيديو
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const imageData = canvas.toDataURL('image/jpeg', 0.8);
             
-            // رسم المشاعر
-            ctx.fillStyle = '#00ff00';
-            ctx.font = 'bold 14px Cairo';
-            const topEmotion = Object.entries(face.expressions).sort((a,b) => b[1] - a[1])[0];
-            const emotionText = getEmotionArabic(topEmotion[0]);
-            ctx.fillText(`😊 ${emotionText}`, box.x, box.y - 5);
-        });
-        
-        // رسم مربعات المجسمات
-        objects.forEach(obj => {
-            ctx.strokeStyle = '#ff4444';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(obj.bbox[0], obj.bbox[1], obj.bbox[2], obj.bbox[3]);
+            const { data: { text } } = await worker.recognize(imageData);
             
-            ctx.fillStyle = '#ff4444';
-            ctx.font = '12px Cairo';
-            const objName = objectCategories[obj.class] || obj.class;
-            ctx.fillText(`${objName} ${Math.round(obj.score * 100)}%`, obj.bbox[0], obj.bbox[1] - 3);
-        });
+            if (text && text.trim().length > 0) {
+                addResult('ocr', `📝 النص المقروء:`, text);
+                textsValue.innerText = text.split(' ').length;
+            } else {
+                addResult('ocr', '📝 قراءة النصوص', 'لم يتم العثور على نصوص واضحة');
+                textsValue.innerText = '0';
+            }
+            
+            statusBar.innerHTML = '✅ تمت قراءة النصوص بنجاح';
+        } catch (error) {
+            console.error('OCR Error:', error);
+            statusBar.innerHTML = '❌ خطأ في قراءة النصوص';
+            addResult('error', 'خطأ', 'حدث خطأ أثناء قراءة النصوص');
+        } finally {
+            ocrBtn.disabled = false;
+            setTimeout(() => {
+                if (isRunning) statusBar.innerHTML = '🟢 التحليل يعمل';
+                else statusBar.innerHTML = '⏹️ متوقف';
+            }, 2000);
+        }
     }
 
-    // ==================== ترجمة المشاعر ====================
-    function getEmotionArabic(emotion) {
-        const emotions = {
-            'neutral': 'محايد',
-            'happy': 'سعيد 😊',
-            'sad': 'حزين 😢',
-            'angry': 'غاضب 😠',
-            'fearful': 'خائف 😨',
-            'disgusted': 'مشمئز 🤢',
-            'surprised': 'متفاجئ 😲'
-        };
-        return emotions[emotion] || emotion;
+    // ==================== إضافة نتيجة ====================
+    function addResult(type, title, content) {
+        const resultDiv = document.createElement('div');
+        resultDiv.className = 'result-card';
+        if (type === 'motion') resultDiv.classList.add('motion-detected');
+        if (type === 'ocr') resultDiv.classList.add('text-detected');
+        
+        const time = new Date().toLocaleTimeString('ar-EG');
+        
+        resultDiv.innerHTML = `
+            <div class="result-title">${title}</div>
+            <div style="font-size: 12px; color: #666; margin-bottom: 5px;">🕒 ${time}</div>
+            <div>${content}</div>
+        `;
+        
+        resultsArea.insertBefore(resultDiv, resultsArea.firstChild);
+        
+        // الاحتفاظ فقط بآخر 20 نتيجة
+        while (resultsArea.children.length > 20) {
+            resultsArea.removeChild(resultsArea.lastChild);
+        }
     }
 
-    // ==================== تحديث واجهة النتائج ====================
-    function updateResultsUI(faces, objects) {
-        let html = '';
+    // ==================== تحديث الواجهة بالحركة ====================
+    function updateMotionUI(motion, brightness, faces) {
+        // تحديث القيم
+        motionValue.innerText = Math.round(motion);
+        brightnessValue.innerText = Math.round(brightness);
+        facesValue.innerText = faces;
         
-        // الوجوه
-        if (faces.length > 0) {
-            html += `<div class="result-item">
-                <div class="result-title">👥 الوجوه المكتشفة (${faces.length})</div>`;
-            faces.forEach((face, i) => {
-                const topEmotion = Object.entries(face.expressions).sort((a,b) => b[1] - a[1])[0];
-                html += `<div class="face-info">• الشخص ${i+1}: ${getEmotionArabic(topEmotion[0])} (${Math.round(topEmotion[1] * 100)}%)</div>`;
-            });
-            html += `</div>`;
+        // تغيير الألوان حسب الحركة
+        if (motion > 15) {
+            motionValue.style.color = '#ff6b6b';
+            if (lastMotionSum < 15 && motion > 15) {
+                addResult('motion', '🔴 حركة مكتشفة!', `تم اكتشاف حركة بنسبة ${Math.round(motion)}% في المشهد`);
+            }
+        } else {
+            motionValue.style.color = '#667eea';
         }
         
-        // المجسمات
-        if (objects.length > 0) {
-            html += `<div class="result-item">
-                <div class="result-title">📦 المجسمات المكتشفة (${objects.length})</div>`;
-            objects.forEach(obj => {
-                const objName = objectCategories[obj.class] || obj.class;
-                html += `<div class="object-info">• ${objName} - ${Math.round(obj.score * 100)}%</div>`;
-            });
-            html += `</div>`;
+        // تغيير لون السطوع
+        if (brightness < 80) {
+            brightnessValue.style.color = '#ff6b6b';
+        } else if (brightness > 180) {
+            brightnessValue.style.color = '#ffc107';
+        } else {
+            brightnessValue.style.color = '#28a745';
         }
         
-        // إذا لم يتم اكتشاف شيء
-        if (faces.length === 0 && objects.length === 0) {
-            html = `<div class="result-item">
-                <div class="result-title">🔍 لا توجد اكتشافات</div>
-                <div style="color: #888;">حاول التحرك أو وضع أشياء أمام الكاميرا</div>
-            </div>`;
-        }
-        
-        // إضافة معلومات الأداء
-        html += `<div class="result-item">
-            <div class="result-title">⚡ معلومات الأداء</div>
-            <div>• معدل الإطارات: ${fps} FPS</div>
-            <div>• وقت التحليل: ${lastAnalysisTime.toFixed(1)} ms</div>
-            <div>• الحالة: ${isAnalyzing ? '🟢 يعمل' : '⏹️ متوقف'}</div>
-        </div>`;
-        
-        resultsArea.innerHTML = html;
+        lastMotionSum = motion;
+        lastBrightness = brightness;
     }
 
     // ==================== حلقة التحليل الرئيسية ====================
     async function analysisLoop() {
-        if (!isAnalyzing) return;
+        if (!isRunning) return;
         
         const startTime = performance.now();
         
         try {
-            // تنفيذ التحليل
-            const [faces, objects] = await Promise.all([
-                detectFaces(),
-                detectObjects()
-            ]);
+            // رسم الإطار الحالي على canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            const endTime = performance.now();
-            lastAnalysisTime = endTime - startTime;
+            // تحليل الصورة
+            const analysis = analyzeImage();
             
-            // تحديث الإحصائيات
-            faceCountSpan.innerText = faces.length;
-            objectCountSpan.innerText = objects.length;
+            // كشف الوجوه
+            const faceCount = await detectFaces();
             
-            // رسم النتائج
-            drawResults(faces, objects);
-            
-            // تحديث واجهة النتائج
-            updateResultsUI(faces, objects);
+            // تحديث الواجهة
+            updateMotionUI(analysis.motion, analysis.brightness, faceCount);
             
             // تحديث FPS
             frameCount++;
             const now = performance.now();
             if (now - lastFpsUpdate >= 1000) {
                 fps = frameCount;
-                fpsSpan.innerText = fps;
+                fpsCounter.innerText = `FPS: ${fps}`;
                 frameCount = 0;
                 lastFpsUpdate = now;
             }
             
-            statusSpan.innerHTML = '✓';
-            statusText.innerHTML = '🟢 التحليل يعمل بسلاسة';
+            // عرض معلومات إضافية على canvas
+            ctx.font = '14px Cairo';
+            ctx.fillStyle = '#00ff00';
+            ctx.shadowBlur = 0;
+            ctx.fillText(`الحركة: ${Math.round(analysis.motion)}%`, 10, 30);
+            ctx.fillStyle = analysis.brightness < 100 ? '#ff6b6b' : '#00ff00';
+            ctx.fillText(`الإضاءة: ${Math.round(analysis.brightness)}`, 10, 55);
+            if (faceCount > 0) {
+                ctx.fillStyle = '#ffd700';
+                ctx.fillText(`👤 ${faceCount} وجه محتمل`, 10, 80);
+            }
             
         } catch (error) {
             console.error('Analysis error:', error);
-            statusSpan.innerHTML = '⚠️';
         }
         
         // استدعاء الحلقة التالية
-        if (isAnalyzing) {
+        if (isRunning) {
             requestAnimationFrame(() => analysisLoop());
         }
     }
 
     // ==================== بدء التحليل ====================
     function startAnalysis() {
-        if (isAnalyzing) return;
+        if (isRunning) return;
         
-        isAnalyzing = true;
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-        snapshotBtn.disabled = false;
+        isRunning = true;
+        startMotionBtn.disabled = true;
+        stopMotionBtn.disabled = false;
         
-        statusText.innerHTML = '🟢 التحليل يعمل...';
-        statusSpan.innerHTML = '✓';
+        statusBar.innerHTML = '🟢 التحليل يعمل - كشف الحركة والوجوه';
+        
+        // إعادة تعيين الإطار السابق
+        previousFrame = null;
         
         // بدء الحلقة
         analysisLoop();
@@ -677,57 +591,63 @@
 
     // ==================== إيقاف التحليل ====================
     function stopAnalysis() {
-        isAnalyzing = false;
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
+        isRunning = false;
+        startMotionBtn.disabled = false;
+        stopMotionBtn.disabled = true;
         
-        statusText.innerHTML = '⏹️ متوقف | اضغط "تشغيل" للمتابعة';
-        statusSpan.innerHTML = '⏹️';
+        statusBar.innerHTML = '⏹️ التحليل متوقف';
         
-        // مسح الـ Canvas
+        // مسح canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        resultsArea.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">⏹️ التحليل متوقف. اضغط "تشغيل" للمتابعة</div>';
+        motionValue.innerText = '0';
+        brightnessValue.innerText = '0';
+        fpsCounter.innerText = 'FPS: 0';
     }
 
-    // ==================== التقاط تقرير ====================
-    function takeSnapshot() {
-        if (!isAnalyzing) {
-            statusText.innerHTML = '⚠️ قم بتشغيل التحليل أولاً';
-            return;
-        }
-        
-        // إنشاء رابط لتحميل الصورة
-        const link = document.createElement('a');
-        link.download = `snapshot_${new Date().toISOString().slice(0,19)}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
-        
-        statusText.innerHTML = '📸 تم حفظ التقرير';
+    // ==================== مسح النتائج ====================
+    function clearResults() {
+        resultsArea.innerHTML = '<div style="text-align: center; padding: 20px; color: #999;">✨ تم مسح النتائج</div>';
+        textsValue.innerText = '0';
+        statusBar.innerHTML = '🗑️ تم مسح النتائج';
         setTimeout(() => {
-            if (isAnalyzing) statusText.innerHTML = '🟢 التحليل يعمل بسلاسة';
-        }, 2000);
+            if (isRunning) statusBar.innerHTML = '🟢 التحليل يعمل';
+            else statusBar.innerHTML = '⏹️ متوقف';
+        }, 1500);
+    }
+
+    // ==================== تهيئة Tesseract ====================
+    async function initOCR() {
+        try {
+            await worker.load();
+            await worker.loadLanguage('ara+eng');
+            await worker.initialize('ara+eng');
+            console.log('OCR initialized');
+        } catch (error) {
+            console.error('OCR init error:', error);
+        }
     }
 
     // ==================== التشغيل ====================
     async function init() {
         await setupCamera();
-        await loadModels();
+        await initOCR();
         
         // إضافة مستمعي الأحداث
-        startBtn.addEventListener('click', startAnalysis);
-        stopBtn.addEventListener('click', stopAnalysis);
-        snapshotBtn.addEventListener('click', takeSnapshot);
+        startMotionBtn.addEventListener('click', startAnalysis);
+        stopMotionBtn.addEventListener('click', stopAnalysis);
+        ocrBtn.addEventListener('click', performOCR);
+        clearBtn.addEventListener('click', clearResults);
         
         // عرض الإطار الأول
-        function drawInitialFrame() {
-            if (video.readyState === 4) {
+        function drawInitial() {
+            if (video.readyState === 4 && !isRunning) {
                 ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             }
-            requestAnimationFrame(drawInitialFrame);
+            requestAnimationFrame(drawInitial);
         }
-        drawInitialFrame();
+        drawInitial();
     }
     
     init();

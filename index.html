@@ -1,240 +1,108 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="description" content="حاسبة استهلاك القماش وتكلفة الإنتاج للخياطين والمصممين">
-    <title>Fabric & Cost Estimator | حاسبة القماش والتكلفة</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?display=swap&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>كاميرا تحليل الأشياء</title>
+    <style>
+        body { font-family: Arial; text-align: center; direction: rtl; }
+        video, canvas { border: 2px solid #ccc; margin: 10px; width: 80%; max-width: 600px; }
+        #results { background: #f0f0f0; padding: 10px; margin-top: 10px; }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header with Dark Mode & Language Toggle -->
-        <div class="header">
-            <div class="logo">
-                <i class="fas fa-cut"></i>
-                <h1>Fabric & Cost Estimator</h1>
-                <span class="badge">v2.0</span>
-            </div>
-            <div class="controls">
-                <button id="darkModeToggle" class="icon-btn" aria-label="الوضع الليلي">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button id="langToggle" class="icon-btn" aria-label="تغيير اللغة">
-                    <i class="fas fa-globe"></i> <span id="langText">EN</span>
-                </button>
-            </div>
-        </div>
+    <h1>كاميرا تحليل الأشياء الذكية</h1>
+    <video id="webcam" autoplay playsinline></video>
+    <canvas id="overlay"></canvas>
+    <div id="results">جارٍ تحميل النموذج...</div>
 
-        <!-- Main Grid -->
-        <div class="main-grid">
-            <!-- Inputs Section -->
-            <div class="card inputs-card">
-                <h2><i class="fas fa-ruler-combined"></i> <span data-key="inputTitle">بيانات القص والخياطة</span></h2>
+    <!-- استيراد مكتبة TensorFlow.js والنموذج -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
+    <script>
+        // 1. إعداد الكاميرا
+        const video = document.getElementById('webcam');
+        const canvas = document.getElementById('overlay');
+        const ctx = canvas.getContext('2d');
+        const resultsDiv = document.getElementById('results');
+
+        async function setupCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                return new Promise((resolve) => {
+                    video.onloadedmetadata = () => {
+                        // ضبط حجم canvas ليطابق الفيديو
+                        canvas.width = video.videoWidth;
+                        canvas.height = video.videoHeight;
+                        resolve(video);
+                    };
+                });
+            } catch (err) {
+                resultsDiv.innerText = "لا يمكن الوصول للكاميرا: " + err;
+            }
+        }
+
+        // 2. تحميل نموذج الذكاء الاصطناعي
+        async function loadModel() {
+            resultsDiv.innerText = "جارٍ تحميل نموذج التعرف...";
+            const model = await cocoSsd.load();
+            resultsDiv.innerText = "النموذج جاهز! انتظر التحليل...";
+            return model;
+        }
+
+        // 3. تحليل الإطار الحالي من الكاميرا
+        async function detectFrame(model) {
+            // رسم إطار الفيديو على الـ canvas لالتقاط الصورة
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // تحليل الصورة من الـ canvas
+            const predictions = await model.detect(canvas);
+            
+            // عرض النتائج
+            displayResults(predictions);
+            
+            // تكرار العملية كل ثانية (للتحليل المستمر)
+            setTimeout(() => detectFrame(model), 1000);
+        }
+
+        // 4. عرض النتائج على الشاشة
+        function displayResults(predictions) {
+            // مسح الـ canvas لإعادة الرسم
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // رسم الفيديو من جديد
+            
+            let resultsText = "تم التعرف على:\n";
+            
+            predictions.forEach(pred => {
+                // رسم مربع حول الجسم المحدد
+                const [x, y, width, height] = pred.bbox;
+                ctx.strokeStyle = "red";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, width, height);
                 
-                <!-- Model Selection -->
-                <div class="input-group">
-                    <label data-key="modelLabel">نوع الموديل</label>
-                    <select id="modelSelect" class="form-control">
-                        <option value="fullCircle">فستان كلوش (كامل)</option>
-                        <option value="halfCircle">فستان كلوش (نصف)</option>
-                        <option value="quarterCircle">فستان كلوش (ربع)</option>
-                        <option value="mensShirtShort">قميص رجالي - كم قصير</option>
-                        <option value="mensShirtLong">قميص رجالي - كم طويل</option>
-                        <option value="mensPants">بنطلون رجالي</option>
-                        <option value="womensWidePants">بنطلون حريمي واسع</option>
-                        <option value="abaya">عباية</option>
-                        <option value="jacket">جاكيت</option>
-                        <option value="kimono">كيمونو</option>
-                    </select>
-                </div>
+                // كتابة اسم الجسم ونسبة الدقة
+                ctx.fillStyle = "red";
+                ctx.font = "16px Arial";
+                ctx.fillText(`${pred.class} (${Math.round(pred.score * 100)}%)`, x, y > 10 ? y - 5 : y + 15);
+                
+                resultsText += `- ${pred.class} (${Math.round(pred.score * 100)}%)\n`;
+            });
+            
+            if(predictions.length === 0) {
+                resultsText = "لم يتم التعرف على أي شيء في هذه اللقطة.";
+            }
+            resultsDiv.innerText = resultsText;
+        }
 
-                <!-- Measurements -->
-                <div class="input-group">
-                    <label data-key="lengthLabel">الطول (سم)</label>
-                    <input type="number" id="length" class="form-control" value="140" step="1" min="30" max="250">
-                    <small class="error-msg" id="lengthError"></small>
-                </div>
+        // 5. تشغيل التطبيق
+        async function main() {
+            await setupCamera();
+            const model = await loadModel();
+            detectFrame(model);
+        }
 
-                <div class="input-group">
-                    <label data-key="chestLabel">محيط الصدر (سم)</label>
-                    <input type="number" id="chest" class="form-control" value="96" step="1" min="50" max="200">
-                    <small class="error-msg" id="chestError"></small>
-                </div>
-
-                <div class="input-group">
-                    <label data-key="shoulderLabel">عرض الأكتاف (سم)</label>
-                    <input type="number" id="shoulder" class="form-control" value="40" step="1" min="30" max="70">
-                </div>
-
-                <div class="input-group">
-                    <label data-key="sleeveLabel">طول الكم (سم)</label>
-                    <input type="number" id="sleeveLength" class="form-control" value="25" step="1" min="0" max="100">
-                </div>
-
-                <!-- Fabric Width -->
-                <div class="input-group">
-                    <label data-key="fabricWidthLabel">عرض القماش (سم)</label>
-                    <select id="fabricWidth" class="form-control">
-                        <option value="90">90 سم</option>
-                        <option value="120" selected>120 سم</option>
-                        <option value="150">150 سم</option>
-                    </select>
-                </div>
-
-                <!-- Cost Section -->
-                <div class="divider"></div>
-                <h3><i class="fas fa-coins"></i> <span data-key="costTitle">التكاليف والربح</span></h3>
-
-                <div class="input-group">
-                    <label data-key="fabricPriceLabel">سعر متر القماش (ريال/دولار)</label>
-                    <input type="number" id="fabricPrice" class="form-control" value="25" step="1" min="0">
-                </div>
-
-                <div class="input-group">
-                    <label data-key="accessoriesLabel">تكلفة الإكسسوارات (أزرار، سحاب، خيوط)</label>
-                    <input type="number" id="accessoriesCost" class="form-control" value="10" step="1" min="0">
-                </div>
-
-                <div class="input-group">
-                    <label data-key="liningLabel">تكلفة البطانة (إن وجدت)</label>
-                    <input type="number" id="liningCost" class="form-control" value="0" step="1" min="0">
-                </div>
-
-                <div class="input-group">
-                    <label data-key="hoursLabel">عدد ساعات العمل المتوقعة</label>
-                    <input type="number" id="workHours" class="form-control" value="4" step="0.5" min="0.5">
-                </div>
-
-                <div class="input-group">
-                    <label data-key="hourlyRateLabel">سعر الساعة (ريال/دولار)</label>
-                    <input type="number" id="hourlyRate" class="form-control" value="15" step="1" min="0">
-                </div>
-
-                <div class="input-group">
-                    <label data-key="profitMarginLabel">هامش الربح (%)</label>
-                    <select id="profitMargin" class="form-control">
-                        <option value="20">20%</option>
-                        <option value="30" selected>30%</option>
-                        <option value="40">40%</option>
-                        <option value="50">50%</option>
-                    </select>
-                </div>
-
-                <div class="input-group">
-                    <label data-key="taxLabel">الضريبة (إن وجدت) %</label>
-                    <input type="number" id="taxRate" class="form-control" value="0" step="1" min="0" max="100">
-                </div>
-
-                <div class="input-group">
-                    <label data-key="extraCostsLabel">مصاريف إضافية (شحن، تغليف)</label>
-                    <input type="number" id="extraCosts" class="form-control" value="0" step="1" min="0">
-                </div>
-
-                <button id="saveProjectBtn" class="btn btn-secondary"><i class="fas fa-save"></i> <span data-key="saveBtn">حفظ المشروع</span></button>
-            </div>
-
-            <!-- Results Section -->
-            <div class="card results-card">
-                <h2><i class="fas fa-chart-line"></i> <span data-key="resultsTitle">النتائج والتقديرات</span></h2>
-
-                <!-- Fabric Results -->
-                <div class="result-box">
-                    <div class="result-item">
-                        <span class="result-label"><i class="fas fa-roll"></i> <span data-key="fabricNeeded">كمية القماش المطلوبة</span>:</span>
-                        <span class="result-value" id="fabricMeters">0.00</span>
-                        <span data-key="meterUnit">متر</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label"><i class="fas fa-chart-pie"></i> <span data-key="wastage">نسبة الهدر</span>:</span>
-                        <span class="result-value" id="wastagePercent">10</span>
-                        <span>%</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label"><i class="fas fa-calculator"></i> <span data-key="fabricCost">تكلفة القماش</span>:</span>
-                        <span class="result-value" id="fabricTotalCost">0.00</span>
-                        <span>ريال</span>
-                    </div>
-                </div>
-
-                <!-- Cost Breakdown -->
-                <div class="result-box">
-                    <div class="result-item">
-                        <span class="result-label"><i class="fas fa-bag-shopping"></i> <span data-key="materialsTotal">إجمالي المواد</span>:</span>
-                        <span class="result-value" id="materialsTotal">0.00</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label"><i class="fas fa-clock"></i> <span data-key="laborCost">تكلفة العمالة</span>:</span>
-                        <span class="result-value" id="laborCost">0.00</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label"><i class="fas fa-truck"></i> <span data-key="otherCosts">مصاريف أخرى</span>:</span>
-                        <span class="result-value" id="otherCosts">0.00</span>
-                    </div>
-                    <div class="result-item total">
-                        <span class="result-label"><i class="fas fa-file-invoice-dollar"></i> <span data-key="totalCost">إجمالي التكلفة</span>:</span>
-                        <span class="result-value" id="totalCost">0.00</span>
-                    </div>
-                </div>
-
-                <!-- Selling Price -->
-                <div class="result-box price-box">
-                    <div class="result-item profit">
-                        <span class="result-label"><i class="fas fa-tag"></i> <span data-key="sellingPrice">سعر البيع المقترح</span>:</span>
-                        <span class="result-value" id="sellingPrice">0.00</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label"><i class="fas fa-chart-simple"></i> <span data-key="netProfit">صافي الربح</span>:</span>
-                        <span class="result-value" id="netProfit">0.00</span>
-                    </div>
-                    <div class="result-item">
-                        <span class="result-label"><i class="fas fa-hourglass-half"></i> <span data-key="hourlyReturn">عائد الساعة</span>:</span>
-                        <span class="result-value" id="hourlyReturn">0.00</span>
-                    </div>
-                </div>
-
-                <!-- Pattern Layout Preview -->
-                <div class="pattern-layout">
-                    <h3><i class="fas fa-dice-d6"></i> <span data-key="patternTitle">مخطط وضع البترون</span></h3>
-                    <canvas id="patternCanvas" width="300" height="200" style="width:100%; max-width:300px; height:auto; background:#f0f0f0; border-radius:12px;"></canvas>
-                    <p class="pattern-note" data-key="patternNote">* ترتيب القطع الأمثل على القماش</p>
-                </div>
-
-                <!-- Action Buttons -->
-                <div class="action-buttons">
-                    <button id="generatePDFBtn" class="btn btn-primary"><i class="fas fa-file-pdf"></i> <span data-key="pdfBtn">تحميل PDF (أمر التشغيل)</span></button>
-                    <button id="printJobSheetBtn" class="btn btn-secondary"><i class="fas fa-print"></i> <span data-key="printBtn">طباعة أمر التشغيل</span></button>
-                    <button id="shareLinkBtn" class="btn btn-outline"><i class="fas fa-share-alt"></i> <span data-key="shareBtn">مشاركة الرابط</span></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Saved Projects Section -->
-        <div class="card projects-card">
-            <h3><i class="fas fa-folder-open"></i> <span data-key="savedProjects">المشاريع المحفوظة</span></h3>
-            <div id="projectsList" class="projects-list">
-                <p class="empty-msg" data-key="noProjects">لا توجد مشاريع محفوظة. اضغط "حفظ المشروع" لإضافة مشروع.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Hidden PDF Template (for PDF generation) -->
-    <div id="pdfTemplate" style="display:none;">
-        <div id="pdfContent">
-            <h2>أمر تشغيل - Fabric & Cost Estimator</h2>
-            <p><strong>رقم الأمر:</strong> <span id="pdfJobNumber"></span></p>
-            <p><strong>التاريخ:</strong> <span id="pdfDate"></span></p>
-            <p><strong>نوع الموديل:</strong> <span id="pdfModel"></span></p>
-            <p><strong>القياسات:</strong> طول: <span id="pdfLength"></span> سم | صدر: <span id="pdfChest"></span> سم | أكتاف: <span id="pdfShoulder"></span> سم</p>
-            <p><strong>كمية القماش:</strong> <span id="pdfFabricMeters"></span> متر</p>
-            <p><strong>سعر البيع المقترح:</strong> <span id="pdfSellingPrice"></span> ريال</p>
-            <p><strong>تاريخ التسليم المقترح:</strong> <span id="pdfDeliveryDate"></span></p>
-        </div>
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="script.js"></script>
+        main();
+    </script>
 </body>
 </html>

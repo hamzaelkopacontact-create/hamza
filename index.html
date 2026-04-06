@@ -2,107 +2,340 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>كاميرا تحليل الأشياء</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الرؤية الشاملة - التحليل بالذكاء الاصطناعي</title>
     <style>
-        body { font-family: Arial; text-align: center; direction: rtl; }
-        video, canvas { border: 2px solid #ccc; margin: 10px; width: 80%; max-width: 600px; }
-        #results { background: #f0f0f0; padding: 10px; margin-top: 10px; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Cairo', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 25px;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        .sub {
+            text-align: center;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+        .camera-box {
+            background: #0f0f1a;
+            border-radius: 24px;
+            padding: 20px;
+            text-align: center;
+        }
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 4/3;
+            margin-bottom: 15px;
+        }
+        video, canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        canvas { pointer-events: none; }
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        button {
+            background: #ff6b6b;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.05);
+        }
+        .btn-primary { background: #4ecdc4; color: #1a1a2e; }
+        .btn-primary:disabled { background: #555; cursor: not-allowed; transform: none; }
+        .results-box {
+            background: #0f0f1a;
+            border-radius: 24px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .analysis-content {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 500px;
+            color: #eee;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            font-size: 15px;
+        }
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #4ecdc4;
+        }
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #4ecdc4;
+            border-top: 3px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .status-text {
+            background: #00000055;
+            padding: 8px;
+            border-radius: 12px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        .api-note {
+            font-size: 12px;
+            color: #aaa;
+            text-align: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>كاميرا تحليل الأشياء الذكية</h1>
-    <video id="webcam" autoplay playsinline></video>
-    <canvas id="overlay"></canvas>
-    <div id="results">جارٍ تحميل النموذج...</div>
+<div class="container">
+    <h1>🕵️ نظام الرؤية الشاملة</h1>
+    <div class="sub">تحليل الوجه | قراءة النصوص | التعرف على المجسمات | الترجمة للعربية</div>
 
-    <!-- استيراد مكتبة TensorFlow.js والنموذج -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <div class="main-grid">
+        <!-- قسم الكاميرا -->
+        <div class="camera-box">
+            <div class="video-wrapper">
+                <video id="webcam" autoplay playsinline muted></video>
+                <canvas id="overlayCanvas"></canvas>
+            </div>
+            <div class="controls">
+                <button id="captureBtn" class="btn-primary">📸 تحليل هذه اللحظة</button>
+            </div>
+            <div id="cameraStatus" class="status-text">⏳ جارٍ تجهيز الكاميرا...</div>
+        </div>
 
-    <script>
-        // 1. إعداد الكاميرا
-        const video = document.getElementById('webcam');
-        const canvas = document.getElementById('overlay');
-        const ctx = canvas.getContext('2d');
-        const resultsDiv = document.getElementById('results');
+        <!-- قسم النتائج -->
+        <div class="results-box">
+            <h3 style="color:white; margin-top:0;">📋 تقرير التحليل الذكي</h3>
+            <div id="analysisResult" class="analysis-content">
+                اضغط على زر "تحليل" لبدء الرؤية الشاملة.
+            </div>
+        </div>
+    </div>
+    <div class="api-note">
+        ⚡ يعمل بواسطة Gemini API | يحلل كل ما يراه: العمر، الجنس، الدولة (من الملامح/الملابس)، المجسمات، النصوص بأي لغة ويعيدها مترجمة للعربية.
+    </div>
+</div>
 
-        async function setupCamera() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                video.srcObject = stream;
-                return new Promise((resolve) => {
-                    video.onloadedmetadata = () => {
-                        // ضبط حجم canvas ليطابق الفيديو
-                        canvas.width = video.videoWidth;
-                        canvas.height = video.videoHeight;
-                        resolve(video);
-                    };
-                });
-            } catch (err) {
-                resultsDiv.innerText = "لا يمكن الوصول للكاميرا: " + err;
-            }
-        }
+<script>
+    // ================== 1. إعدادات API ==================
+    // ⚠️ هام: ضع مفتاح API الخاص بك هنا
+    const API_KEY = 'YOUR_GEMINI_API_KEY';  // <--- استبدل هذا بمفتاحك من Google AI Studio
+    
+    const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+    
+    // ================== 2. عناصر الصفحة ==================
+    const video = document.getElementById('webcam');
+    const canvas = document.getElementById('overlayCanvas');
+    const ctx = canvas.getContext('2d');
+    const captureBtn = document.getElementById('captureBtn');
+    const resultDiv = document.getElementById('analysisResult');
+    const statusDiv = document.getElementById('cameraStatus');
 
-        // 2. تحميل نموذج الذكاء الاصطناعي
-        async function loadModel() {
-            resultsDiv.innerText = "جارٍ تحميل نموذج التعرف...";
-            const model = await cocoSsd.load();
-            resultsDiv.innerText = "النموذج جاهز! انتظر التحليل...";
-            return model;
-        }
+    let modelLoaded = true; // API جاهزة دائماً
 
-        // 3. تحليل الإطار الحالي من الكاميرا
-        async function detectFrame(model) {
-            // رسم إطار الفيديو على الـ canvas لالتقاط الصورة
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // تحليل الصورة من الـ canvas
-            const predictions = await model.detect(canvas);
-            
-            // عرض النتائج
-            displayResults(predictions);
-            
-            // تكرار العملية كل ثانية (للتحليل المستمر)
-            setTimeout(() => detectFrame(model), 1000);
-        }
-
-        // 4. عرض النتائج على الشاشة
-        function displayResults(predictions) {
-            // مسح الـ canvas لإعادة الرسم
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height); // رسم الفيديو من جديد
-            
-            let resultsText = "تم التعرف على:\n";
-            
-            predictions.forEach(pred => {
-                // رسم مربع حول الجسم المحدد
-                const [x, y, width, height] = pred.bbox;
-                ctx.strokeStyle = "red";
-                ctx.lineWidth = 2;
-                ctx.strokeRect(x, y, width, height);
-                
-                // كتابة اسم الجسم ونسبة الدقة
-                ctx.fillStyle = "red";
-                ctx.font = "16px Arial";
-                ctx.fillText(`${pred.class} (${Math.round(pred.score * 100)}%)`, x, y > 10 ? y - 5 : y + 15);
-                
-                resultsText += `- ${pred.class} (${Math.round(pred.score * 100)}%)\n`;
+    // ================== 3. تشغيل الكاميرا ==================
+    async function setupCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            video.srcObject = stream;
+            return new Promise((resolve) => {
+                video.onloadedmetadata = () => {
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    statusDiv.innerHTML = '✅ الكاميرا جاهزة | اضغط تحليل';
+                    resolve(video);
+                };
             });
-            
-            if(predictions.length === 0) {
-                resultsText = "لم يتم التعرف على أي شيء في هذه اللقطة.";
+        } catch (err) {
+            statusDiv.innerHTML = '❌ لا يمكن الوصول للكاميرا: ' + err.message;
+            console.error(err);
+        }
+    }
+
+    // ================== 4. التقاط الصورة وتحويلها لـ Base64 ==================
+    function captureImage() {
+        // رسم الإطار الحالي على canvas
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        // تحويل canvas إلى Base64 (JPEG بجودة 80% لتقليل الحجم)
+        return canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
+    }
+
+    // ================== 5. تحليل الصورة بواسطة Gemini API ==================
+    async function analyzeWithGemini(imageBase64) {
+        // بناء الـ Prompt بشكل احترافي يطلب كل المعلومات
+        const prompt = `
+أنت خبير في تحليل الصور ورؤية الكمبيوتر. انظر إلى هذه الصورة بعناية فائقة وأخبرني بكل ما تراه.
+مطلوب منك تحليل الصورة واستخراج المعلومات التالية بدقة، مع ترجمة أي نص إلى اللغة العربية:
+
+1. **تحليل الوجه إن وجد**: إذا رأيت شخصاً في الصورة، حدد:
+   - العمر التقريبي (مثلاً: 25-30 سنة)
+   - الجنس (ذكر/أنثى)
+   - الدولة أو المنطقة الأصلية بناءً على ملامح الوجه، اللون، أو الملابس (مثلاً: من شمال أفريقيا، من الخليج، من جنوب آسيا)
+   - الحالة العاطفية (سعيد، حزين، محايد، متفاجئ)
+
+2. **المجسمات والأشياء**: اذكر كل المجسمات والأشياء التي تراها في الصورة (كرسي، سيارة، هاتف، شجرة، حيوان، إلخ).
+
+3. **قراءة النصوص**: إذا كان هناك أي نصوص مكتوبة بأي لغة في الصورة (إنجليزية، صينية، فرنسية، روسية، إلخ)، اقرأها بدقة ثم اكتبها وترجمتها إلى اللغة العربية.
+
+4. **وصف المشهد العام**: اكتب وصفاً شاملاً للمشهد بأكمله باللغة العربية الفصحى الحديثة.
+
+قم بتنظيم الإجابة بطريقة جميلة ومقروءة باستخدام عناوين ونقاط. لا تترك أي تفصيل مهما كان صغيراً.
+        `;
+
+        const requestBody = {
+            contents: [{
+                parts: [
+                    { text: prompt },
+                    {
+                        inline_data: {
+                            mime_type: "image/jpeg",
+                            data: imageBase64
+                        }
+                    }
+                ]
+            }],
+            generationConfig: {
+                temperature: 0.4,
+                maxOutputTokens: 2048
             }
-            resultsDiv.innerText = resultsText;
-        }
+        };
 
-        // 5. تشغيل التطبيق
-        async function main() {
-            await setupCamera();
-            const model = await loadModel();
-            detectFrame(model);
-        }
+        try {
+            const response = await fetch(GEMINI_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
 
-        main();
-    </script>
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`API Error: ${errorData.error?.message || response.statusText}`);
+            }
+
+            const data = await response.json();
+            const analysisText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+            
+            if (!analysisText) {
+                return "⚠️ لم يتم الحصول على تحليل من النموذج. حاول مرة أخرى.";
+            }
+            return analysisText;
+            
+        } catch (error) {
+            console.error('Gemini API Error:', error);
+            return `❌ خطأ في الاتصال بـ Gemini API: ${error.message}\n\nتأكد من أن مفتاح API صحيح.`;
+        }
+    }
+
+    // ================== 6. الوظيفة الرئيسية عند الضغط ==================
+    let isAnalyzing = false;
+    
+    async function performAnalysis() {
+        if (isAnalyzing) return;
+        
+        // التحقق من مفتاح API
+        if (API_KEY === 'YOUR_GEMINI_API_KEY') {
+            resultDiv.innerHTML = '⚠️ **خطأ في الإعدادات**\n\nالرجاء وضع مفتاح API صالح من Google AI Studio في السطر رقم 84 من الكود.\n\nيمكنك الحصول على مفتاح مجاني من: https://aistudio.google.com/';
+            return;
+        }
+        
+        isAnalyzing = true;
+        captureBtn.disabled = true;
+        captureBtn.textContent = '🔄 جاري التحليل الذكي...';
+        
+        // إظهار مؤشر تحميل
+        resultDiv.innerHTML = `<div class="loading"><div class="spinner"></div> جاري إرسال الصورة وتحليلها بواسطة الذكاء الاصطناعي...</div>`;
+        
+        try {
+            // 1. التقاط الصورة
+            const imageBase64 = captureImage();
+            
+            // 2. إرسال للتحليل
+            const analysis = await analyzeWithGemini(imageBase64);
+            
+            // 3. عرض النتيجة بشكل جميل
+            resultDiv.innerHTML = analysis.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            
+            // 4. إضافة تأثير نجاح بسيط
+            statusDiv.innerHTML = '✅ تم التحليل بنجاح!';
+            setTimeout(() => {
+                if(statusDiv.innerHTML === '✅ تم التحليل بنجاح!') 
+                    statusDiv.innerHTML = '✅ الكاميرا جاهزة | اضغط تحليل';
+            }, 3000);
+            
+        } catch (error) {
+            console.error(error);
+            resultDiv.innerHTML = `❌ حدث خطأ: ${error.message}`;
+            statusDiv.innerHTML = '❌ فشل التحليل';
+        } finally {
+            isAnalyzing = false;
+            captureBtn.disabled = false;
+            captureBtn.textContent = '📸 تحليل هذه اللحظة';
+        }
+    }
+
+    // ================== 7. التشغيل ==================
+    setupCamera().then(() => {
+        captureBtn.addEventListener('click', performAnalysis);
+    });
+</script>
 </body>
 </html>
